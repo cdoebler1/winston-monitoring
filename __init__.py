@@ -1,14 +1,20 @@
 from mycroft import MycroftSkill, intent_file_handler
+import os
+import time
 import subprocess
 
 
-class Winston(MycroftSkill):
+class Winston_monitoring(MycroftSkill):
     def __init__(self):
         MycroftSkill.__init__(self)
 
-    @intent_file_handler('winston.about.intent')
-    def winston_about(self, message):
-        self.speak_dialog('winston.about')
+    def measure_temp():
+        temp = os.popen("vcgencmd measure_temp").readline()
+        return (temp.replace("temp=", ""))
+
+    while True:
+        print(measure_temp())
+        time.sleep(300)
 
     @intent_file_handler('winston.temp.intent')
     def winston_temp(self, message):
@@ -25,13 +31,9 @@ class Winston(MycroftSkill):
         uptime = uptime.communicate()[0].decode('ascii')[:-1]
         self.speak("I have been {}".format(uptime))
 
-    @intent_file_handler('winston.sexy.intent')
-    def winston_sexy(self, message):
-        self.speak_dialog('winston.sexy')
-
     def stop(self):
         pass
 
 
 def create_skill():
-    return Winston()
+    return Winston_monitoring()
